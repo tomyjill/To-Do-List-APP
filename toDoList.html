@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="eng">
+<head>
+	<meta charset="UTF-8">
+	<title>"jQuery To Do List App"</title>
+	<link rel="stylesheet" type="text/css" href="toDoList.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Courgette">
+</head>
+<body>
+	<div class="container">
+        <div class="row">
+            <div class="col mx-auto col-md-8 mt-3 text-center">
+                <form id="taskForm" class="my-3">
+                    <h3 class="mb-4">To Do List</h3>
+                    <div class="input-group">
+                    <input type="text" class="form-control" id="inputValue" placeholder="Task to do...">
+                    <button class="btn btn-primary" type="submit" id="addTask">Add task</button>
+                    </div>
+                </form>    
+            </div>
+        </div>
+              
+        <div class="task-container">
+            <div class="task-list my-5">
+                <ul id="myUL" class="nav flex-column nav-tabs"></ul> 
+                <button type="button" class="btn btn-primary my-3" id="clearList">Clear list</button> 
+            </div>
+        </div>   
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<script src="toDoList.js"></script>
+</body>
+</html>
