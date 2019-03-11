@@ -9,8 +9,15 @@ body {
 .container {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .task-container {
-  border-style: 2px solid #969eaa;
+  margin: 25px 5px;
+}
+
+.listBox {
+    border: 2px solid #969eaa;
+    border-radius: 10px;
+    width: 600px;
 }
