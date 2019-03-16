@@ -17,50 +17,20 @@ const taskInput = '<input type="text" class="form-control" placeholder="Task to 
 const button = '<button class="btn btn-primary addTask pull-right" type="submit">Add task</button>';
                         // string
 const addListToStorage = (listTitle) => {
-
-    // 1 check if we already have something in the storage?
-    const lists = JSON.parse(localStorage.getItem('list')) || [];
-    if(){}    
-
-
-    // 2 if yes we need to push it to whatewer is already in the storage
-    // 3 if sotrage happens to be empty just insert array with single list object
-
-    // create new list and insert it into sotrage ?
     const newList = {
         title: listTitle,
         tasks: [],
-    };
-    localStorage.setItem('list', JSON.stringify([newList]))
+    }
+          // array
+    const storedLists = JSON.parse(localStorage.getItem('list')) || [];
+    storedLists.push(newList);
+    localStorage.setItem('list', JSON.stringify(storedLists)); 
 }
 
-const renderLists = () => {
-    const lists = JSON.parse(localStorage.getItem('list')) || [];
-    const body = $("body");
-    lists.forEach(list => {
-        const ul = $("<div class='listBox'><ul></ul></div>").attr('list', list.title);
-        ul.css("font-size", 30);
-        ul.css("font-weight", "bold");    
-        ul.css("text-transform", "capitalize");
-        ul
-        .prepend(
-            $(taskInput).attr('input', list.title)
-        )
-        .append(
-            $(button).attr('id', list.title)
-        );
-        list.tasks.forEach(task => {
-            const li = $("<li>"+ task.name +"</li>");
-            ul.append(li);
-        });
-        ul.prepend(list.title);
-        body.append(ul)
-    })
-}
+// const addTaskToStorage
 
 const addNewList = (title) => {
     const body = $("body");
-    addListToStorage(title);
     console.log('taskInput')
     const ul = $("<div class='listBox'><ul></ul></div>").attr('list', title);
     
@@ -77,9 +47,17 @@ const addNewList = (title) => {
     spanDelete.addClass("pull-right");
     $('.fa-times-circle').css( "color", "#d62828");
     spanDelete.on('click', function () {
-    ul.remove();
+        ul.remove();
+        deleteStorageList(title);
     });
     spanDelete.prependTo(ul);
+}
+
+const renderLists = () => {
+    const lists = JSON.parse(localStorage.getItem('list')) || [];
+    lists.forEach(list => {
+        addNewList(list.title);
+    });
 }
 
 const addNewTask = (listName, taskName) => {
@@ -105,6 +83,13 @@ const addNewTask = (listName, taskName) => {
     listHtml.append(li);
 }
 
+const deleteStorageList = (listTitle) => {
+
+    const storedLists = JSON.parse(localStorage.getItem('list')) || [];
+    const cleanLists = storedLists.filter(list => list.title !== listTitle);
+    localStorage.setItem('list', JSON.stringify(cleanLists)); 
+}
+
 $(document).ready(function() {
 
     // 1.
@@ -114,6 +99,7 @@ $(document).ready(function() {
         const titleValue = $("#titleValue").val();
         // lists.push({ title:titleValue, tasks:[] })
         addNewList(titleValue);
+        addListToStorage(titleValue);
         console.log("titleValue");
         
         if (titleValue === '') {
@@ -129,6 +115,13 @@ $(document).ready(function() {
         console.log(listName);
 
         addNewTask(listName, inputValue);
+
+        // create new function addTaskToStorage
+        // this function will accept listName and Task Name
+        // you will need to find that list in the sotrage
+        // and add added task to that list tasks array in proper format
+        //  { name: 'some task', completed: false },
+
         if (inputValue === '') {
             alert("Please enter a task!");
         } 
@@ -137,7 +130,6 @@ $(document).ready(function() {
 
     $(document).on('click', '.deleteTask', function() {
         $(this).parent().remove();
-        //localStorage.setItem('listBox', $('.listBox').html());
     });
 
     $(document).on('click', '.crossedTask', function(){
