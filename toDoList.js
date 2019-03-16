@@ -40,16 +40,13 @@ const renderLists = () => {
 
 const addNewList = (title) => {
     const body = $("body");
+    console.log('taskInput')
     const ul = $("<div class='listBox'><ul></ul></div>").attr('list', title);
     
     ul.css("font-size", 30);
     ul.css("font-weight", "bold");    
     ul.css("text-transform", "capitalize");
-    ul.prepend(
-        $(taskInput).attr('input', title)
-    ).prepend(
-        $(button).attr('id', title)
-    );
+    ul.prepend(taskInput).prepend(button);
     ul.prepend(title);
     body.append(ul)
 
@@ -59,51 +56,32 @@ const addNewList = (title) => {
     spanDelete.addClass("pull-right");
     $('.fa-times-circle').css( "color", "#d62828");
     spanDelete.on('click', function () {
-    deleteList();
+    ul.remove();
     });
     spanDelete.prependTo(ul);
 }
 
-const deleteList = (listName, taskName) => {
-    taskList.remove();
-}
-
 const addNewTask = (listName, taskName) => {
     const listHtml = $("[list='"+ listName +"']");
-    const taskList = listHtml.append("<li>"+ taskName +"</li>").wrapInner("<div class='new'></div>");
-    listHtml.addClass("nav flex-column nav-tabs");
-    
-    const spanDelete = $("<span></span>");
-    spanDelete.addClass("fa");
-    spanDelete.addClass("fa-times-circle");
-    spanDelete.addClass("pull-right");
+    const li = $('<li>');
+    li.text(taskName);
+    const deleteSpan = 
+    $("<span class='deleteTask' task=" + taskName + "></span>");
+    deleteSpan.addClass("fa");
+    deleteSpan.addClass("fa-times-circle");
+    deleteSpan.addClass("pull-right");
     $('.fa-times-circle').css( "color", "#d62828");
-    spanDelete.on('click', function () {
-    const div = $(this).parents("taskList");
-    div.remove();
-    });
-    spanDelete.appendTo(taskList);
-
-    const spanEdit = $("<span></span>");
-    spanEdit.addClass("fa");
-    spanEdit.addClass("fa-pencil-square");
-    spanEdit.addClass("pull-right");
-    $('.fa-pencil-square').css( "color", "#11b5e4");
-    spanEdit.on('click', function () {
-    const div = $(this).parents("taskList");
-    div.text(" ");
-    });
-    spanEdit.appendTo(taskList);
-
-    const spanComplete = $("<span></span>");
-    spanComplete.addClass("fa");
-    spanComplete.addClass("fa-check-circle");
-    spanComplete.addClass("pull-right");
-    spanComplete.on('click', function () {
-    const div = $(this).parents("taskList");
-    div.css("text-decoration","line-through");
-    });
-    spanComplete.appendTo(taskList);
+    li.append(deleteSpan);
+    li.attr('taskName', taskName);
+    listHtml.append(li);
+    
+    const completeSpan = 
+    $("<span class='crossedTask' task=" + taskName +"></span>");
+    completeSpan.addClass("fa");
+    completeSpan.addClass("fa-check-circle");
+    completeSpan.addClass("pull-right");
+    li.append(completeSpan);
+    listHtml.append(li);
 }
 
 $(document).ready(function() {
@@ -118,46 +96,28 @@ $(document).ready(function() {
         
         if (titleValue === '') {
             alert("Please enter a list title!");
-        } else {
-           // $(lists).appendTo($("#myUL"));
         } 
-        
-        $("#titleValue").val("");
-        const spanDelete = $("<span></span>");
-        spanDelete.addClass("fa");
-        spanDelete.addClass("fa-times-circle");
-        spanDelete.addClass("pull-right");
-        $('.fa-times-circle').css( "color", "#d62828");
-        spanDelete.on('click', function () {
-        deleteList();
-        });
-        spanDelete.appendTo(lists);
-
-        //$('.task-list').html('<input type="text" class="form-control" id="inputValue" placeholder="Task to do..."/>');
-        //$('.task-list').html('<button class="btn btn-primary pull-right" type="submit" id="addTask">Add task</button>');
-        
     });
-    
-    
+        
     $(document).on('click', '.addTask', function() {
-        const listName = $(this).attr('id');
-        const inputValue = $("[input='"+ listName +"']").val();
+        const listName = $(this).parent().attr('list');
+        const inputValue = $(this).next('input').val();
         console.log(inputValue);
         console.log(listName);
 
         addNewTask(listName, inputValue);
-        
-		//const li = $("<li></li>");
-        //li.addClass("nav-link")
-        //li.css("font-size", 30);
-        //li.append($("<span>" + inputValue + "</span>"));
-
         if (inputValue === '') {
             alert("Please enter a task!");
-        } else {
-            //inputValue.appendTo($("#myUL"));
-        }
+        } 
     });	
-});
-			
 
+    $(document).on('click', '.deleteTask', function() {
+        $(this).parent().remove();
+
+    });
+
+    $(document).on('click', '.crossedTask', function(){
+        $(this).parent().css("text-decoration","line-through");
+    });
+
+});
