@@ -1,21 +1,41 @@
-let lists = [];
+// let lists = [
 //     {
-//         title: ' ',
+//         title: 'test',
 //         tasks: [
-//             { name: ' ', completed: true},
-//             { name: ' ', completed: false},
+//             { name: 'gfgfd', completed: true},
+//             { name: 'yhtrf', completed: false},
 //         ]
 //     },
 //     {
-//         title: ' ',
+//         title: 'tes2',
 //         tasks: [],
 //     }
 // ];
 
+
 const taskInput = '<input type="text" class="form-control" placeholder="Task to do..."/>';
 const button = '<button class="btn btn-primary addTask pull-right" type="submit">Add task</button>';
+                        // string
+const addListToStorage = (listTitle) => {
+
+    // 1 check if we already have something in the storage?
+    const lists = JSON.parse(localStorage.getItem('list')) || [];
+    if(){}    
+
+
+    // 2 if yes we need to push it to whatewer is already in the storage
+    // 3 if sotrage happens to be empty just insert array with single list object
+
+    // create new list and insert it into sotrage ?
+    const newList = {
+        title: listTitle,
+        tasks: [],
+    };
+    localStorage.setItem('list', JSON.stringify([newList]))
+}
 
 const renderLists = () => {
+    const lists = JSON.parse(localStorage.getItem('list')) || [];
     const body = $("body");
     lists.forEach(list => {
         const ul = $("<div class='listBox'><ul></ul></div>").attr('list', list.title);
@@ -40,6 +60,7 @@ const renderLists = () => {
 
 const addNewList = (title) => {
     const body = $("body");
+    addListToStorage(title);
     console.log('taskInput')
     const ul = $("<div class='listBox'><ul></ul></div>").attr('list', title);
     
@@ -85,18 +106,20 @@ const addNewTask = (listName, taskName) => {
 }
 
 $(document).ready(function() {
+
     // 1.
     renderLists();
-
+    //$('.listBox').html(localStorage.getItem('listBox'));
 	$('#addListTitle').on('click', function() {
         const titleValue = $("#titleValue").val();
-        lists.push({ title:titleValue, tasks:[] })
+        // lists.push({ title:titleValue, tasks:[] })
         addNewList(titleValue);
         console.log("titleValue");
         
         if (titleValue === '') {
             alert("Please enter a list title!");
         } 
+        //localStorage.setItem('listBox', $('.listBox').html());
     });
         
     $(document).on('click', '.addTask', function() {
@@ -109,15 +132,16 @@ $(document).ready(function() {
         if (inputValue === '') {
             alert("Please enter a task!");
         } 
+        //localStorage.setItem('listBox', $('.listBox').html());
     });	
 
     $(document).on('click', '.deleteTask', function() {
         $(this).parent().remove();
-
+        //localStorage.setItem('listBox', $('.listBox').html());
     });
 
     $(document).on('click', '.crossedTask', function(){
         $(this).parent().css("text-decoration","line-through");
+        //localStorage.setItem('listBox', $('.listBox').html());
     });
-
 });
