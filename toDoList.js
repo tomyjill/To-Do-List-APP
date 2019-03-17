@@ -1,18 +1,3 @@
-// let lists = [
-//     {
-//         title: 'test',
-//         tasks: [
-//             { name: 'gfgfd', completed: true},
-//             { name: 'yhtrf', completed: false},
-//         ]
-//     },
-//     {
-//         title: 'tes2',
-//         tasks: [],
-//     }
-// ];
-
-
 const taskInput = '<input type="text" class="form-control" placeholder="Task to do..."/>';
 const button = '<button class="btn btn-primary addTask pull-right" type="submit">Add task</button>';
                         // string
@@ -28,14 +13,19 @@ const addListToStorage = (listTitle) => {
 }
 
 const addTaskToStorage = (listTitle, taskName) => {
-    const newListTask = {
-        title: listTitle,
-        task: taskName,
-    }
-    console.log(newListTask);
+    const newTask = {
+        completed: false,
+        name: taskName,
+    };
     const storedLists = JSON.parse(localStorage.getItem('list')) || [];
-    storedLists.push(newListTask);
-    localStorage.setItem('list', JSON.stringify(storedLists));
+    
+    const updatedLists = storedLists.map(list => {
+        if (list.title === listTitle) {
+            list.tasks.push(newTask);
+        }
+        return list;
+    })
+    localStorage.setItem('list', JSON.stringify(updatedLists));
 }
 
 const addNewList = (title) => {
@@ -66,6 +56,9 @@ const renderLists = () => {
     const lists = JSON.parse(localStorage.getItem('list')) || [];
     lists.forEach(list => {
         addNewList(list.title);
+        list.tasks.forEach(task => {
+            addNewTask(list.title, task.name);
+        })
     });
 }
 
@@ -132,12 +125,7 @@ $(document).ready(function() {
 
         addNewTask(listName, inputValue);
         addTaskToStorage(listName, inputValue);
-        // create new function addTaskToStorage
-        // this function will accept listName and Task Name
-        // you will need to find that list in the sotrage
-        // and add added task to that list tasks array in proper format
-        //  { name: 'some task', completed: false },
-
+       
         if (inputValue === '') {
             alert("Please enter a task!");
         } 
@@ -145,7 +133,7 @@ $(document).ready(function() {
 
     $(document).on('click', '.deleteTask', function() {
         $(this).parent().remove();
-        deleteStorageTask(taskName);
+        deleteStorageTask();
     });
 
     $(document).on('click', '.crossedTask', function(){
