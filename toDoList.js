@@ -27,7 +27,16 @@ const addListToStorage = (listTitle) => {
     localStorage.setItem('list', JSON.stringify(storedLists)); 
 }
 
-// const addTaskToStorage
+const addTaskToStorage = (listTitle, taskName) => {
+    const newListTask = {
+        title: listTitle,
+        task: taskName,
+    }
+    console.log(newListTask);
+    const storedLists = JSON.parse(localStorage.getItem('list')) || [];
+    storedLists.push(newListTask);
+    localStorage.setItem('list', JSON.stringify(storedLists));
+}
 
 const addNewList = (title) => {
     const body = $("body");
@@ -60,8 +69,8 @@ const renderLists = () => {
     });
 }
 
-const addNewTask = (listName, taskName) => {
-    const listHtml = $("[list='"+ listName +"']");
+const addNewTask = (listTitle, taskName) => {
+    const listHtml = $("[list='"+ listTitle +"']");
     const li = $('<li>');
     li.text(taskName);
     const deleteSpan = 
@@ -90,11 +99,19 @@ const deleteStorageList = (listTitle) => {
     localStorage.setItem('list', JSON.stringify(cleanLists)); 
 }
 
+const deleteStorageTask = (taskName) => {
+
+    const storedTasks = JSON.parse(localStorage.getItem('list')) || [];
+    const cleanTasks = storedTasks.filter(list => list.task !== taskName);
+    localStorage.setItem('list', JSON.stringify(cleanTasks)); 
+}
+
+
 $(document).ready(function() {
 
     // 1.
     renderLists();
-    //$('.listBox').html(localStorage.getItem('listBox'));
+    
 	$('#addListTitle').on('click', function() {
         const titleValue = $("#titleValue").val();
         // lists.push({ title:titleValue, tasks:[] })
@@ -105,7 +122,6 @@ $(document).ready(function() {
         if (titleValue === '') {
             alert("Please enter a list title!");
         } 
-        //localStorage.setItem('listBox', $('.listBox').html());
     });
         
     $(document).on('click', '.addTask', function() {
@@ -115,7 +131,7 @@ $(document).ready(function() {
         console.log(listName);
 
         addNewTask(listName, inputValue);
-
+        addTaskToStorage(listName, inputValue);
         // create new function addTaskToStorage
         // this function will accept listName and Task Name
         // you will need to find that list in the sotrage
@@ -125,15 +141,14 @@ $(document).ready(function() {
         if (inputValue === '') {
             alert("Please enter a task!");
         } 
-        //localStorage.setItem('listBox', $('.listBox').html());
     });	
 
     $(document).on('click', '.deleteTask', function() {
         $(this).parent().remove();
+        deleteStorageTask(taskName);
     });
 
     $(document).on('click', '.crossedTask', function(){
         $(this).parent().css("text-decoration","line-through");
-        //localStorage.setItem('listBox', $('.listBox').html());
     });
 });
