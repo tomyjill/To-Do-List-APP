@@ -30,7 +30,6 @@ const addTaskToStorage = (listTitle, taskName) => {
 
 const addNewList = (title) => {
     const body = $("body");
-    console.log('taskInput')
     const ul = $("<div class='listBox'><ul></ul></div>").attr('list', title);
     
     ul.css("font-size", 30);
@@ -92,11 +91,18 @@ const deleteStorageList = (listTitle) => {
     localStorage.setItem('list', JSON.stringify(cleanLists)); 
 }
 
-const deleteStorageTask = (taskName) => {
+const deleteStorageTask = (listTitle, taskName) => {
 
-    const storedTasks = JSON.parse(localStorage.getItem('list')) || [];
-    const cleanTasks = storedTasks.filter(list => list.task !== taskName);
-    localStorage.setItem('list', JSON.stringify(cleanTasks)); 
+    const storedLists = JSON.parse(localStorage.getItem('list')) || [];
+
+    const updatedLists = storedLists.map(list => {
+        if (list.title === listTitle) {
+            const filteredTasks = list.tasks.filter(task => task.name !== taskName);
+            list.tasks = filteredTasks;
+        }
+        return list;
+    })
+    localStorage.setItem('list', JSON.stringify(updatedLists)); 
 }
 
 
@@ -133,7 +139,10 @@ $(document).ready(function() {
 
     $(document).on('click', '.deleteTask', function() {
         $(this).parent().remove();
-        deleteStorageTask();
+        const listTitle = $(this).parent().parent().parent();
+        
+        console.log(listTitle);
+        deleteStorageTask(listTitle, taskName);
     });
 
     $(document).on('click', '.crossedTask', function(){
