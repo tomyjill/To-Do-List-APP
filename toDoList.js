@@ -139,9 +139,10 @@ $(document).ready(function() {
 
     $(document).on('click', '.deleteTask', function() {
         $(this).parent().remove();
-        const listTitle = $(this).parent().parent().parent();
-        
+        const listTitle = $('.listBox').attr('list');
+        const taskName = $(this).parent().attr('taskName');
         console.log(listTitle);
+        console.log(taskName);
         deleteStorageTask(listTitle, taskName);
     });
 
