@@ -56,15 +56,18 @@ const renderLists = () => {
     lists.forEach(list => {
         addNewList(list.title);
         list.tasks.forEach(task => {
-            addNewTask(list.title, task.name);
+            addNewTask(list.title, task.name, task.completed);
         })
     });
 }
 
-const addNewTask = (listTitle, taskName) => {
+const addNewTask = (listTitle, taskName, isCompleted = false) => {
     const listHtml = $("[list='"+ listTitle +"']");
     const li = $('<li>');
     li.text(taskName);
+    if (isCompleted) {
+        li.css('text-decoration', 'line-through')
+    }
     const deleteSpan = 
     $("<span class='deleteTask' task=" + taskName + "></span>");
     deleteSpan.addClass("fa");
@@ -105,7 +108,24 @@ const deleteStorageTask = (listTitle, taskName) => {
     localStorage.setItem('list', JSON.stringify(updatedLists)); 
 }
 
+const updateTaskStatus = (listTitle, taskName, taskStatus) => {
 
+    const storedLists = JSON.parse(localStorage.getItem('list')) || [];
+
+    const updatedLists = storedLists.map(list => {
+        if (list.title == listTitle) {
+            list.tasks.map(task => {
+                if (task.name == taskName) {
+                    task.completed = taskStatus
+                }
+                return task;
+            });
+        } 
+        return list;
+    })
+    localStorage.setItem('list', JSON.stringify(updatedLists));  
+}
+ 
 $(document).ready(function() {
 
     // 1.
@@ -141,12 +161,22 @@ $(document).ready(function() {
         $(this).parent().remove();
         const listTitle = $('.listBox').attr('list');
         const taskName = $(this).parent().attr('taskName');
-        console.log(listTitle);
-        console.log(taskName);
         deleteStorageTask(listTitle, taskName);
     });
 
-    $(document).on('click', '.crossedTask', function(){
-        $(this).parent().css("text-decoration","line-through");
+    $(document).on('click', '.crossedTask', function() {
+       
+        const isCrossed = $(this).parent().attr('style') == 'text-decoration: line-through;';
+        const listTitle = $('.listBox').attr('list');
+        const taskName = $(this).parent().attr('taskName');
+        if (isCrossed == true) {
+            // we need to uncross it
+            $(this).parent().css("text-decoration","");
+            updateTaskStatus(listTitle, taskName, false);
+        } else {
+            // cross the fucker
+            $(this).parent().css("text-decoration","line-through");
+            updateTaskStatus(listTitle, taskName, true);
+        }
     });
 });
