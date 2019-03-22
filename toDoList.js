@@ -173,10 +173,13 @@ $(document).ready(function() {
             // we need to uncross it
             $(this).parent().css("text-decoration","");
             updateTaskStatus(listTitle, taskName, false);
+            const completeSpan = 
+            $(this).removeClass("fa-undo");
         } else {
             // cross the fucker
             $(this).parent().css("text-decoration","line-through");
             updateTaskStatus(listTitle, taskName, true);
+            $(this).addClass("fa-undo");    
         }
     });
 });
