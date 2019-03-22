@@ -85,6 +85,14 @@ const addNewTask = (listTitle, taskName, isCompleted = false) => {
     completeSpan.addClass("pull-right");
     li.append(completeSpan);
     listHtml.append(li);
+
+    const eraseSpan = 
+    $("<span class='eraseTask' task=" + taskName +"></span>");
+    eraseSpan.addClass("fa");
+    eraseSpan.addClass("fa-eraser");
+    eraseSpan.addClass("pull-right");
+    li.append(eraseSpan);
+    listHtml.append(li);
 }
 
 const deleteStorageList = (listTitle) => {
@@ -124,6 +132,25 @@ const updateTaskStatus = (listTitle, taskName, taskStatus) => {
         return list;
     })
     localStorage.setItem('list', JSON.stringify(updatedLists));  
+}
+
+const updateTaskName = (listTitle, taskName, newTaskName) => {
+
+    const storedLists = JSON.parse(localStorage.getItem('list')) || [];
+    const inputValue = $('.addTask').next('input').val();
+    const newTaskName = $('.eraseTask').attr('task').text(inputValue);
+    const updatedLists = storedLists.map(list => {
+        if (list.title == listTitle) {
+            list.tasks.map(task => {
+                if (task.name == taskName) {
+                    task.name == newTaskName
+                }
+                return task;
+            });
+        } 
+        return list;
+    })
+    localStorage.setItem('list', JSON.stringify(updatedLists)); 
 }
  
 $(document).ready(function() {
@@ -182,4 +209,21 @@ $(document).ready(function() {
             $(this).addClass("fa-undo");    
         }
     });
+
+
+    $(document).on('dblclick', 'li', function() {
+        const taskEdit = '<input onkeydown="editTask(this)" type="text" class="form-control" value="'+ $(this).text() + '"/>';
+        $(this).replaceWith(taskEdit)
+    });
+
 });
+
+const editTask = (ele) => {
+    if(event.key === 'Enter') {
+        // find the list
+        // persist in the storage
+        // edited item should go to the top
+        addNewTask('cooking', ele.value);
+        $(ele).remove();  
+    }
+}
