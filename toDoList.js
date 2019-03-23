@@ -86,12 +86,12 @@ const addNewTask = (listTitle, taskName, isCompleted = false) => {
     li.append(completeSpan);
     listHtml.append(li);
 
-    const eraseSpan = 
+    const editSpan = 
     $("<span class='eraseTask' task=" + taskName +"></span>");
-    eraseSpan.addClass("fa");
-    eraseSpan.addClass("fa-eraser");
-    eraseSpan.addClass("pull-right");
-    li.append(eraseSpan);
+    editSpan.addClass("fa");
+    editSpan.addClass("fa-edit");
+    editSpan.addClass("pull-right");
+    li.append(editSpan);
     listHtml.append(li);
 }
 
@@ -119,7 +119,6 @@ const deleteStorageTask = (listTitle, taskName) => {
 const updateTaskStatus = (listTitle, taskName, taskStatus) => {
 
     const storedLists = JSON.parse(localStorage.getItem('list')) || [];
-
     const updatedLists = storedLists.map(list => {
         if (list.title == listTitle) {
             list.tasks.map(task => {
@@ -137,20 +136,18 @@ const updateTaskStatus = (listTitle, taskName, taskStatus) => {
 const updateTaskName = (listTitle, taskName, newTaskName) => {
 
     const storedLists = JSON.parse(localStorage.getItem('list')) || [];
-    const inputValue = $('.addTask').next('input').val();
-    const newTaskName = $('.eraseTask').attr('task').text(inputValue);
     const updatedLists = storedLists.map(list => {
         if (list.title == listTitle) {
             list.tasks.map(task => {
                 if (task.name == taskName) {
-                    task.name == newTaskName
+                    task.name = newTaskName
                 }
                 return task;
-            });
+            })
         } 
         return list;
     })
-    localStorage.setItem('list', JSON.stringify(updatedLists)); 
+    localStorage.setItem('list', JSON.stringify(updatedLists));  
 }
  
 $(document).ready(function() {
@@ -200,7 +197,6 @@ $(document).ready(function() {
             // we need to uncross it
             $(this).parent().css("text-decoration","");
             updateTaskStatus(listTitle, taskName, false);
-            const completeSpan = 
             $(this).removeClass("fa-undo");
         } else {
             // cross the fucker
@@ -212,18 +208,22 @@ $(document).ready(function() {
 
 
     $(document).on('dblclick', 'li', function() {
-        const taskEdit = '<input onkeydown="editTask(this)" type="text" class="form-control" value="'+ $(this).text() + '"/>';
+        const taskName = $(this).attr('taskname');
+        const taskEdit = '<input taskname="' + taskName + '" onkeydown="editTask(this)" type="text" class="form-control" value="'+ $(this).text() + '"/>';
         $(this).replaceWith(taskEdit)
     });
 
 });
 
-const editTask = (ele) => {
+const editTask = (ele, taskName) => {
     if(event.key === 'Enter') {
-        // find the list
-        // persist in the storage
         // edited item should go to the top
-        addNewTask('cooking', ele.value);
+
+        const originalTaskName = $(ele).attr('taskname');
+        const listTitle = $(ele).closest('.listBox').attr('list');
+        addNewTask(listTitle, ele.value);
+        updateTaskName(listTitle, originalTaskName, ele.value);
         $(ele).remove();  
-    }
+    } 
+      
 }
