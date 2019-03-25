@@ -87,7 +87,7 @@ const addNewTask = (listTitle, taskName, isCompleted = false) => {
     listHtml.append(li);
 
     const editSpan = 
-    $("<span class='eraseTask' task=" + taskName +"></span>");
+    $("<span class='editTask' task=" + taskName +"></span>");
     editSpan.addClass("fa");
     editSpan.addClass("fa-edit");
     editSpan.addClass("pull-right");
@@ -149,10 +149,10 @@ const updateTaskName = (listTitle, taskName, newTaskName) => {
     })
     localStorage.setItem('list', JSON.stringify(updatedLists));  
 }
+
  
 $(document).ready(function() {
 
-    // 1.
     renderLists();
     
 	$('#addListTitle').on('click', function() {
@@ -212,18 +212,16 @@ $(document).ready(function() {
         const taskEdit = '<input taskname="' + taskName + '" onkeydown="editTask(this)" type="text" class="form-control" value="'+ $(this).text() + '"/>';
         $(this).replaceWith(taskEdit)
     });
-
 });
 
-const editTask = (ele, taskName) => {
+const editTask = (input, taskName) => {
     if(event.key === 'Enter') {
         // edited item should go to the top
 
-        const originalTaskName = $(ele).attr('taskname');
-        const listTitle = $(ele).closest('.listBox').attr('list');
-        addNewTask(listTitle, ele.value);
-        updateTaskName(listTitle, originalTaskName, ele.value);
-        $(ele).remove();  
-    } 
-      
+        const originalTaskName = $(input).attr('taskname');
+        const listTitle = $(input).closest('.listBox').attr('list');
+        addNewTask(listTitle, input.value);
+        updateTaskName(listTitle, originalTaskName, input.value);
+        $(input).remove();  
+    }       
 }

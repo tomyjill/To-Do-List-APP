@@ -16,6 +16,7 @@ body {
 
 .listBox {
     margin: 25px 25px;
+    padding: 5px 5px;
     border: 2px solid #969eaa;
     border-radius: 10px;
     width: 600px;
